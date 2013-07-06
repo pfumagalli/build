@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- Cleanup all our build files -->
+  <target name="clean"
+          unless="task.executed.clean"
+          description="Clean up the build target directory">
+    <property name="task.executed.clean" value="true"/>
+    <delete dir="${targetdir}"/>
+  </target>
+
+</project>

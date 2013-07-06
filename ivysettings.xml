@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ivysettings>
+  <settings defaultResolver="github" />
+  <caches defaultCacheDir="${user.dir}/.ivy-pier" />
+  <resolvers>
+    <url name="github">
+      <ivy      pattern="https://raw.github.com/pfumagalli/libraries/master/descriptors/[organisation]/[module]/ivy-[revision].xml" />
+      <artifact pattern="https://raw.github.com/pfumagalli/libraries/master/artifacts/[organisation]/[module]/[revision]/[artifact]-[revision]-[type].[ext]" />
+    </url>  
+  </resolvers>
+</ivysettings>

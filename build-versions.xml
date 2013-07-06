@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+  
+  <target name="-tag:increasemajor">
+    <script language="javascript">
+      <![CDATA[
+        var major = project.getProperty('ivy.revision.major');
+        project.setProperty('ivy.revision.new', (parseInt(major) + 1) + '.0.0');
+      ]]>
+    </script>
+  </target>
+  
+  <target name="-tag:increaseminor">
+    <script language="javascript">
+      <![CDATA[
+        var major = project.getProperty('ivy.revision.major');
+        var minor = project.getProperty('ivy.revision.minor');
+        project.setProperty('ivy.revision.new', major + '.' + (parseInt(minor) + 1) + '.0');
+      ]]>
+    </script>
+  </target>
+
+  <target name="-tag:increasebuild">
+    <script language="javascript">
+      <![CDATA[
+        var major = project.getProperty('ivy.revision.major');
+        var minor = project.getProperty('ivy.revision.minor');
+        var build = project.getProperty('ivy.revision.build');
+        project.setProperty('ivy.revision.new', major + '.' + minor + '.' + (parseInt(build) + 1));
+      ]]>
+    </script>
+  </target>
+
+  <target name="tag:major"
+          depends="init,-tag:increasemajor"
+          unless="task.executed.tag"
+          description="Tag the current code by increasing the major version">
+    <property name="task.executed.tag" value="true"/>
+    <echo message="${ivy.revision.new}"/>
+  </target>
+  
+  <target name="tag:minor"
+          depends="init,-tag:increaseminor"
+          unless="task.executed.tag"
+          description="Tag the current code by increasing the minor version">
+    <property name="task.executed.tag" value="true"/>
+    <echo message="${ivy.revision.new}"/>
+  </target>
+
+  <target name="tag:build"
+          depends="init,-tag:increasebuild"
+          unless="task.executed.tag"
+          description="Tag the current code by increasing the build version">
+    <property name="task.executed.tag" value="true"/>
+    <echo message="${ivy.revision.new}"/>
+  </target>
+
+  <target name="tag"
+          depends="tag:build"
+          description="Tag the current code by increasing the build version (alias for tag:build)"/>
+
+<!--
+  <copy file="ivy.xml" tofile="ivy.out" force="true">
+    <filterchain>
+      <tokenfilter>
+          <replaceregex pattern="revision(\s*)=(\s*[&quot;'])${ivy.revision}([&quot;'])"
+                        replace="revision\1=\2${ivy.revision.major}.${ivy.revision.minor}.${ivy.revision.build}\3"
+                        flags="gi"/>
+      </tokenfilter>
+    </filterchain>
+  </copy>
+-->
+
+</project>

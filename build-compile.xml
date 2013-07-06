@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- Compile all our sources in one single operation -->
+  <target name="compile"
+          depends="init"
+          unless="task.executed.compile"
+          description="Compile all sources">
+    <property name="task.executed.compile" value="true"/>
+    
+    <!-- Create our target directory and copy all java sources -->
+    <mkdir dir="${targetdir}/compile"/>
+    <copy todir="${targetdir}/compile">
+      <fileset dir="${sourcedir}"/>
+    </copy>
+
+    <!-- Create a property for our compilation directories src1:src2:... -->
+    <pathconvert property="compile.directories" pathsep=":">
+      <dirset dir="source">
+        <include name="*"/>
+      </dirset>
+    </pathconvert>
+
+    <!--+ Properly compile all java sources in one go, don't use destdir; we do
+        | this rather than using a script for each directory so that source
+        | directories depending on each other (eg, "test" depending on "main")
+        | can be processed all in one go without the need to set classpaths.
+        +-->
+    <javac includeantruntime="false"
+           srcdir="${compile.directories}"/>
+
+  </target>
+
+  <!--+ ========================================================================
+      | CREATION OF JARs
+      +-->
+
+  <!-- A little macro we can use to jar a target directory up -->
+  <macrodef name="-macro:jar" >
+    <attribute name="directory"/>
+    <sequential>
+      <jar destfile="${targetdir}/${ivy.module}-${ivy.revision}-@{directory}.jar"
+           basedir="${targetdir}/compile/@{directory}"
+           excludes="**/*.java"/>
+    </sequential>
+  </macrodef>
+
+  <!-- Use JavaScript to JAR up each directory individually -->
+  <target name="jar"
+          depends="compile"
+          unless="task.executed.jar"
+          description="Prepare JAR archives for each compiled source directory">
+    <property name="task.executed.jar" value="true"/>
+    <script language="javascript">
+      <![CDATA[
+        importClass(java.io.File);
+
+        // Create a dirset and get all the directories in /target/compile
+        var targetDir = project.getProperty('targetdir');
+        var dirSet = project.createDataType('dirset');
+        dirSet.setDir(new File(targetDir + '/compile'));
+        dirSet.setIncludes('*');
+        var scanner = dirSet.getDirectoryScanner(project);
+        var directories = scanner.getIncludedDirectories();
+
+        // Using our macro, jar each directory individually
+        var task = project.createTask('-macro:jar');
+        for (var x = 0; x < directories.length; x ++) {
+          task.setDynamicAttribute('directory', directories[x]);
+          task.perform();
+        }
+      ]]>
+    </script>
+  </target>
+  
+</project>

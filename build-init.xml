@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- Load our Ivy file and suck up all the properties -->
+  <target name="-init:loadivyfile" if="ivyfile">
+    <ivy:settings file="${builddir}/ivysettings.xml" />
+    <ivy:info file="${basedir}/ivy.xml"/>
+  </target>
+
+  <!-- Fail nicely if the ivy file was not found -->
+  <target name="-init:checkivyfile" unless="ivyfile">
+    <fail message="Ivy file not found, create one!"/>
+  </target>
+
+  <!-- Initialize the build system -->
+  <target name="init"
+          depends="-init:checkivyfile,-init:loadivyfile"
+          unless="task.executed.init"
+          description="Initialize the build system">
+    <property name="task.executed.init" value="true"/>
+
+    <!-- Use some JavaScript magit to  parse our version -->
+    <script language="javascript">
+      <![CDATA[
+        var revision = String(project.getProperty('ivy.revision').trim());
+        var match = /^(\d+)\.(\d+)\.(\d+)$/gi.exec(revision);
+        if (match == null) throw 'Invalid revision in Ivy file: ' + revision;
+        project.setProperty('ivy.revision.major', match[1]);
+        project.setProperty('ivy.revision.minor', match[2]);
+        project.setProperty('ivy.revision.build', match[3]);
+        // Normalize the "ivy.revision" property!
+        project.setProperty('ivy.revision', match[1] + '.' + match[2] + '.' + match[3]);
+        project.setProperty('ant.project.name', match[1] + '.' + match[2] + '.' + match[3]);
+      ]]>
+    </script>
+
+    <echo message="Organisation:   ${ivy.organisation}"/>
+    <echo message="Module:         ${ivy.module}"/>
+    <echo message="Revision:       ${ivy.revision.major}.${ivy.revision.minor}.${ivy.revision.build}"/>
+  </target>
+
+</project>
