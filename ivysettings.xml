@@ -13,7 +13,7 @@
       <artifact pattern="${ivy.libraries}/artifacts/[organisation]/[module]/[revision]/[artifact]-[revision](-[type]).[ext]" />
     </filesystem>
 
-    <filesystem name="publications">
+    <filesystem name="publications" checksums="">
       <ivy      pattern="${ivy.publications}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
       <artifact pattern="${ivy.publications}/[organisation]/[module]/[revision]/[artifact]-[revision]-[type].[ext]" />
     </filesystem>
