@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant">
-  
+
   <target name="-tag:increasemajor">
     <script language="javascript">
       <![CDATA[
@@ -9,7 +9,7 @@
       ]]>
     </script>
   </target>
-  
+
   <target name="-tag:increaseminor">
     <script language="javascript">
       <![CDATA[
@@ -38,7 +38,7 @@
     <property name="task.executed.tag" value="true"/>
     <echo message="${ivy.revision.new}"/>
   </target>
-  
+
   <target name="tag:minor"
           depends="init,-tag:increaseminor"
           unless="task.executed.tag"
@@ -54,21 +54,5 @@
     <property name="task.executed.tag" value="true"/>
     <echo message="${ivy.revision.new}"/>
   </target>
-
-  <target name="tag"
-          depends="tag:build"
-          description="Tag the current code by increasing the build version (alias for tag:build)"/>
-
-<!--
-  <copy file="ivy.xml" tofile="ivy.out" force="true">
-    <filterchain>
-      <tokenfilter>
-          <replaceregex pattern="revision(\s*)=(\s*[&quot;'])${ivy.revision}([&quot;'])"
-                        replace="revision\1=\2${ivy.revision.major}.${ivy.revision.minor}.${ivy.revision.build}\3"
-                        flags="gi"/>
-      </tokenfilter>
-    </filterchain>
-  </copy>
--->
 
 </project>

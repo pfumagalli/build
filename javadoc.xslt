@@ -10,19 +10,24 @@
   <xsl:param name="target"/>
   <xsl:param name="sources"/>
 
+  <!-- This is simple, we just need to prepare an Ant build file -->
   <xsl:template match="/">
     <project>
       <target name="{$target}">
         <xsl:element name="{$macro}">
           <filesets>
+            
+            <!-- Split the "sources" parameter, for each prepare a fileset -->
             <xsl:for-each select="str:tokenize($sources,',')">
               <fileset includes="**/*.java" defaultexcludes="yes">
                 <xsl:attribute name="dir">
                   <xsl:text>${sourcedir}/</xsl:text>
+                  <!-- Remember to trim white space, it could be comma spc -->
                   <xsl:value-of select="normalize-space(.)"/>
                 </xsl:attribute>
               </fileset>
             </xsl:for-each>
+
           </filesets>
         </xsl:element>
       </target>

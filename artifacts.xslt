@@ -9,9 +9,9 @@
     | artifacts for our JavaDOCs, associated with the "*" configuration.    |
     + ===================================================================== +-->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  
+
   <!-- Better to be safe than sorry -->
-  <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no"/>  
+  <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no"/>
 
   <!-- Copy all templates we find, regardless -->
   <xsl:template match="@*|node()">
@@ -91,7 +91,7 @@
     </xsl:call-template>
 
   </xsl:template>
-  
+
   <!--+ ========================================================================
       | This gets called to insert an artifact if it wasn't found already.
       + -->
@@ -100,11 +100,12 @@
     <xsl:param name="name"/>
     <xsl:param name="type"/>
     <xsl:param name="ext"/>
-    
+
+    <!-- Only insert the new element if nothing matching the same was found (do not duplicate) -->
     <xsl:if test="not(/ivy-module/publications/artifact[@conf=$conf][@name=$name][@type=$type][@ext=$ext])">
       <artifact conf="{$conf}" name="{$name}" type="{$type}" ext="{$ext}"/>
     </xsl:if>
-    
+
   </xsl:template>
-  
+
 </xsl:stylesheet>

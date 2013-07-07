@@ -4,7 +4,7 @@
   <!-- Load our Ivy file and suck up all the properties -->
   <target name="-init:loadivyfile" unless="task.executed.init:loadivyfile" if="ivyfile">
     <property name="task.executed.init:loadivyfile" value="true"/>
-    
+
     <!-- Ensure artifacts are properly inserted in our Ivy file -->
     <mkdir dir="${targetdir}"/>
     <xslt in="${ivyfile}" out="${targetdir}/ivy.xml"  style="${builddir}/artifacts.xslt"/>
@@ -13,7 +13,7 @@
     <ivy:settings file="${builddir}/ivysettings.xml"/>
     <ivy:resolve file="${targetdir}/ivy.xml"/>
     <ivy:info file="${targetdir}/ivy.xml"/>
-    
+
     <ivy:cachepath pathid="ivy.classpath" type="bin" conf="*"/>
     <pathconvert property="ivy.classpath" refid="ivy.classpath"/>
     <echo message="${ivy.classpath}"/>

@@ -20,8 +20,11 @@
           unless="task.executed.package"
           description="Prepare JAR archives for each compiled source directory">
     <property name="task.executed.package" value="true"/>
-    
+
+    <!-- Make some room for our publishing directory -->
     <mkdir dir="${targetdir}/publish"/>
+
+    <!-- Jar binaries and Zip sources using the macro above -->
     <script language="javascript">
       <![CDATA[
         importClass(java.io.File);
@@ -48,8 +51,10 @@
       ]]>
     </script>
 
+    <!-- Create a big ZIP file of all our JavaDOCs (all together) -->
     <zip destfile="${targetdir}/publish/${ivy.module}-${ivy.revision}-doc.zip"
          basedir="${targetdir}/javadoc"/>
+
   </target>
 
   <!-- Publishing via Ivy -->

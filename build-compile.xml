@@ -7,7 +7,7 @@
           unless="task.executed.compile"
           description="Compile all sources">
     <property name="task.executed.compile" value="true"/>
-    
+
     <!-- Create our target directory and copy all java sources -->
     <mkdir dir="${targetdir}/compile"/>
     <copy todir="${targetdir}/compile">

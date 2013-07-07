@@ -7,11 +7,14 @@
           unless="task.executed.eclipse"
           description="Prepare an Eclipse project's classpath">
     <property name="task.executed.eclipse" value="true"/>
-    
+
+    <!-- Create our artifacts report -->
     <ivy:artifactreport tofile="${targetdir}/artifacts.xml"/>
 
+    <!-- Create a directory for Eclipse's output -->
     <mkdir dir="${targetdir}/eclipse"/>
 
+    <!-- Process the artifact report to produce a .classpath -->
     <xslt in="${targetdir}/artifacts.xml"
           out=".classpath"
           style="${builddir}/eclipse.xslt">

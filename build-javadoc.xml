@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant">
 
+  <!-- This macro will be invoked by the generated buildfile -->
   <macrodef name="macro.javadoc" >
     <element name="filesets"/>
     <sequential>
       <javadoc destdir="${targetdir}/javadoc">
+        <!-- The generated buildfile will specify a number of filesets -->
         <filesets/>
       </javadoc>
     </sequential>
   </macrodef>
-  
+
+  <!-- Prepare a sub-build with XSLT, including each source dir and call it -->
   <target name="javadoc"
           depends="init"
           unless="task.executed.javadoc"
           description="Prepare all JavaDOC references">
     <property name="task.executed.javadoc" value="true"/>
 
+    <!-- Make some room -->
     <mkdir dir="${targetdir}/javadoc"/>
 
+    <!-- This stylesheet will prepare a build file calling the macro with
+         all our public configuration source directories -->
     <xslt in="${ant.file}"
           out="${targetdir}/javadoc.xml"
           style="${builddir}/javadoc.xslt">
@@ -26,6 +32,7 @@
       <param name="sources" expression="${ivy.public.configurations}"/>
     </xslt>
 
+    <!-- Call the build file we generated -->
     <ant antfile="${targetdir}/javadoc.xml"
          target="-javadoc:callmacro"/>
 
