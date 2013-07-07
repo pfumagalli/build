@@ -2,9 +2,14 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <!-- Our default properties -->
-  <property name="builddir" value="${basedir}/build"/>
-  <property name="sourcedir" value="${basedir}/source"/>
-  <property name="targetdir" value="${basedir}/target"/>
+  <property name="builddir"  location="${basedir}/build"/>
+  <property name="sourcedir" location="${basedir}/source"/>
+  <property name="targetdir" location="${basedir}/target"/>
+
+  <!-- Where Ivy can store caches, find libraries and publish artivacts -->
+  <property name="ivy.cache"        location="${user.home}/.ivy-shared"/>
+  <property name="ivy.libraries"    location="${basedir}/../libraries"/>
+  <property name="ivy.publications" location="${basedir}/../publications"/>
 
   <!-- The "ivyfile" property is set only if the "ivy.xml" file is found -->
   <available property="ivyfile"
@@ -22,9 +27,11 @@
            classpathref="buildclasspath"/>
 
   <!-- Import all our individual build files -->
-  <import file="build-init.xml"/>
   <import file="build-clean.xml"/>
   <import file="build-compile.xml"/>
+  <import file="build-init.xml"/>
+  <import file="build-javadoc.xml"/>
+  <import file="build-publish.xml"/>
   <import file="build-versions.xml"/>
 
 </project>

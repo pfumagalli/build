@@ -2,8 +2,11 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <!-- Load our Ivy file and suck up all the properties -->
-  <target name="-init:loadivyfile" if="ivyfile">
+  <target name="-init:loadivyfile" unless="task.executed.init:loadivyfile" if="ivyfile">
+    <property name="task.executed.init:loadivyfile" value="true"/>
+
     <ivy:settings file="${builddir}/ivysettings.xml" />
+    <ivy:resolve file="${basedir}/ivy.xml"/>
     <ivy:info file="${basedir}/ivy.xml"/>
   </target>
 
@@ -19,24 +22,33 @@
           description="Initialize the build system">
     <property name="task.executed.init" value="true"/>
 
-    <!-- Use some JavaScript magit to  parse our version -->
+    <!-- Use some JavaScript magic to parse our version, prepare source dirs -->
     <script language="javascript">
       <![CDATA[
-        var revision = String(project.getProperty('ivy.revision').trim());
+        // Parse our "ivy.revision" property
+        var revision = String(project.getProperty('ivy.revision'));
         var match = /^(\d+)\.(\d+)\.(\d+)$/gi.exec(revision);
-        if (match == null) throw 'Invalid revision in Ivy file: ' + revision;
+        if (match == null) throw 'Invalid revision in Ivy file: "' + revision + '"';
         project.setProperty('ivy.revision.major', match[1]);
         project.setProperty('ivy.revision.minor', match[2]);
         project.setProperty('ivy.revision.build', match[3]);
-        // Normalize the "ivy.revision" property!
-        project.setProperty('ivy.revision', match[1] + '.' + match[2] + '.' + match[3]);
-        project.setProperty('ant.project.name', match[1] + '.' + match[2] + '.' + match[3]);
+
+        // Get all the "public" configurations and map them to source dirs
+        var configurationsProperty = project.getProperty('ivy.public.configurations');
+        var configurations = String(configurationsProperty).split(/[ ,]+/);
+        var includes = new Array();
+        for (var x = 0; x < configurations.length; x ++) {
+          // The "default" configuration resides in the "main" directory
+          if (configurations[x] == 'default') includes.push('main');
+          else includes.push(configurations[x]);
+        }
+        project.setProperty('ivy.public.sources', includes.join(','));
       ]]>
     </script>
 
     <echo message="Organisation:   ${ivy.organisation}"/>
     <echo message="Module:         ${ivy.module}"/>
-    <echo message="Revision:       ${ivy.revision.major}.${ivy.revision.minor}.${ivy.revision.build}"/>
+    <echo message="Revision:       ${ivy.revision}"/>
   </target>
 
 </project>

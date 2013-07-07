@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ivysettings>
-  <settings defaultResolver="github" />
-  <caches defaultCacheDir="${user.dir}/.ivy-pier" />
+
+  <settings defaultResolver="libraries" />
+
+  <caches defaultCacheDir="${ivy.cache}" />
+
   <resolvers>
-    <url name="github">
-      <ivy      pattern="https://raw.github.com/pfumagalli/libraries/master/descriptors/[organisation]/[module]/ivy-[revision].xml" />
-      <artifact pattern="https://raw.github.com/pfumagalli/libraries/master/artifacts/[organisation]/[module]/[revision]/[artifact]-[revision]-[type].[ext]" />
-    </url>  
+
+    <filesystem name="libraries">
+      <ivy      pattern="${ivy.libraries}/descriptors/[organisation]/[module]/ivy-[revision].xml" />
+      <artifact pattern="${ivy.libraries}/artifacts/[organisation]/[module]/[revision]/[artifact]-[revision](-[type]).[ext]" />
+    </filesystem>
+
+    <filesystem name="publications">
+      <ivy      pattern="${ivy.publications}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
+      <artifact pattern="${ivy.publications}/[organisation]/[module]/[revision]/[artifact]-[revision]-[type].[ext]" />
+    </filesystem>
+
   </resolvers>
 </ivysettings>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <macrodef name="macro.javadoc" >
+    <element name="filesets"/>
+    <sequential>
+      <javadoc destdir="${targetdir}/javadoc">
+        <filesets/>
+      </javadoc>
+    </sequential>
+  </macrodef>
+  
+  <target name="javadoc"
+          depends="init"
+          unless="task.executed.javadoc"
+          description="Prepare all JavaDOC references">
+    <property name="task.executed.javadoc" value="true"/>
+
+    <mkdir dir="${targetdir}/javadoc"/>
+
+    <echoxml file="${targetdir}/javadoc-source.xml">
+      <project/>
+    </echoxml>
+
+    <xslt in="${targetdir}/javadoc-source.xml"
+          out="${targetdir}/javadoc-build.xml"
+          style="${builddir}/javadoc.xslt">
+      <param name="macro" expression="macro.javadoc"/>
+      <param name="target" expression="-javadoc:callmacro"/>
+      <param name="sources" expression="${ivy.public.sources}"/>
+    </xslt>
+
+    <ant antfile="${targetdir}/javadoc-build.xml"
+         target="-javadoc:callmacro"/>
+
+  </target>
+</project>
