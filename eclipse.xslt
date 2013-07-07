@@ -6,8 +6,11 @@
   <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="no"/>
 
   <xsl:param name="ivyfile"/>
+  <xsl:param name="basedir"/>
   <xsl:param name="sourcedir"/>
-  <xsl:param name="eclipseout"/>
+  <xsl:param name="eclipsedir"/>
+  
+  <xsl:variable name="eclipseout" select="substring-after($eclipsedir,concat($basedir,'/'))"/>
 
   <!-- Start creating a normal Eclipse .classpath file -->
   <xsl:template match="/">
@@ -26,7 +29,8 @@
 
   <!-- Configurations in Ivy become source paths in Eclipse -->
   <xsl:template match="conf">
-    <classpathentry kind="src" path="{$sourcedir}/{@name}" output="{$eclipseout}"/>
+    <classpathentry kind="src" path="{substring-after($sourcedir,concat($basedir,'/'))}/{@name}"
+                    output="{$eclipseout}"/>
   </xsl:template>
 
   <!-- Modules in the artifact report become libraries in Eclipse -->

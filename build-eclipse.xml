@@ -13,14 +13,32 @@
 
     <!-- Create a directory for Eclipse's output -->
     <mkdir dir="${targetdir}/eclipse"/>
+    
+    <!-- Create all our sources directories -->
+    <script language="javascript">
+      <![CDATA[
+        importClass(java.io.File);
+
+        var sourceDir = project.getProperty('sourcedir');
+        var configurations = project.getProperty('ivy.configurations');
+        var array = String(configurations).split(',');
+
+        for (var x = 0; x < array.length; x ++) {
+          var configuration = array[x].trim();
+          var directory = new File(sourceDir, configuration);
+          if (directory.mkdirs()) print ('Created directory "' + directory + '"');
+        }
+      ]]>
+    </script>
 
     <!-- Process the artifact report to produce a .classpath -->
     <xslt in="${targetdir}/artifacts.xml"
           out=".classpath"
           style="${builddir}/eclipse.xslt">
       <param name="ivyfile" expression="${targetdir}/ivy.xml"/>
-      <param name="eclipseout" expression="${targetdir}/eclipse"/>
+      <param name="eclipsedir" expression="${targetdir}/eclipse"/>
       <param name="sourcedir" expression="${sourcedir}"/>
+      <param name="basedir" expression="${basedir}"/>
     </xslt>
 
   </target>

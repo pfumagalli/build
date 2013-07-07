@@ -40,7 +40,6 @@
 
         // Using our macro, package up each directory individually
         var task = project.createTask('macro.package');
-        print(task.getClass());
         for (var x = 0; x < directories.length; x ++) {
           var directory = directories[x];
           var filelabel = directory == 'default' ? '' : '-' + directory;
