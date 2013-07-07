@@ -13,6 +13,10 @@
     <ivy:settings file="${builddir}/ivysettings.xml"/>
     <ivy:resolve file="${targetdir}/ivy.xml"/>
     <ivy:info file="${targetdir}/ivy.xml"/>
+    
+    <ivy:cachepath pathid="ivy.classpath" type="bin" conf="*"/>
+    <pathconvert property="ivy.classpath" refid="ivy.classpath"/>
+    <echo message="${ivy.classpath}"/>
   </target>
 
   <!-- Fail nicely if the ivy file was not found -->

@@ -2,6 +2,8 @@
 
 <ivysettings>
 
+  <property name="ivy.retrieve.pattern" value="lib/[artifact]-[type]-[revision].[ext]"/>
+
   <settings defaultResolver="libraries" />
 
   <caches defaultCacheDir="${ivy.cache}" />

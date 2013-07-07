@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- Compile all our sources in one single operation -->
+  <target name="eclipse"
+          depends="init"
+          unless="task.executed.eclipse"
+          description="Prepare an Eclipse project's classpath">
+    <property name="task.executed.eclipse" value="true"/>
+    
+    <ivy:artifactreport tofile="${targetdir}/artifacts.xml"/>
+
+    <mkdir dir="${targetdir}/eclipse"/>
+
+    <xslt in="${targetdir}/artifacts.xml"
+          out=".classpath"
+          style="${builddir}/eclipse.xslt">
+      <param name="ivyfile" expression="${targetdir}/ivy.xml"/>
+      <param name="eclipseout" expression="${targetdir}/eclipse"/>
+      <param name="sourcedir" expression="${sourcedir}"/>
+    </xslt>
+
+  </target>
+</project>
+
