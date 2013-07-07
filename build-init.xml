@@ -4,10 +4,15 @@
   <!-- Load our Ivy file and suck up all the properties -->
   <target name="-init:loadivyfile" unless="task.executed.init:loadivyfile" if="ivyfile">
     <property name="task.executed.init:loadivyfile" value="true"/>
+    
+    <!-- Ensure artifacts are properly inserted in our Ivy file -->
+    <mkdir dir="${targetdir}"/>
+    <xslt in="${ivyfile}" out="${targetdir}/ivy.xml"  style="${builddir}/artifacts.xslt"/>
 
-    <ivy:settings file="${builddir}/ivysettings.xml" />
-    <ivy:resolve file="${basedir}/ivy.xml"/>
-    <ivy:info file="${basedir}/ivy.xml"/>
+    <!-- Load up our Ivy file and resolve dependencies -->
+    <ivy:settings file="${builddir}/ivysettings.xml"/>
+    <ivy:resolve file="${targetdir}/ivy.xml"/>
+    <ivy:info file="${targetdir}/ivy.xml"/>
   </target>
 
   <!-- Fail nicely if the ivy file was not found -->
@@ -32,17 +37,6 @@
         project.setProperty('ivy.revision.major', match[1]);
         project.setProperty('ivy.revision.minor', match[2]);
         project.setProperty('ivy.revision.build', match[3]);
-
-        // Get all the "public" configurations and map them to source dirs
-        var configurationsProperty = project.getProperty('ivy.public.configurations');
-        var configurations = String(configurationsProperty).split(/[ ,]+/);
-        var includes = new Array();
-        for (var x = 0; x < configurations.length; x ++) {
-          // The "default" configuration resides in the "main" directory
-          if (configurations[x] == 'default') includes.push('main');
-          else includes.push(configurations[x]);
-        }
-        project.setProperty('ivy.public.sources', includes.join(','));
       ]]>
     </script>
 

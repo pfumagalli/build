@@ -23,7 +23,7 @@
 
     <!--+ Properly compile all java sources in one go, don't use destdir; we do
         | this rather than using a script for each directory so that source
-        | directories depending on each other (eg, "test" depending on "main")
+        | directories depending on each other (eg "test" depending on "default")
         | can be processed all in one go without the need to set classpaths.
         +-->
     <javac includeantruntime="false"

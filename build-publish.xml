@@ -29,9 +29,9 @@
         // Create a dirset and get the public conf directories from /target/compile
         var targetDir = project.getProperty('targetdir');
         var dirSet = project.createDataType('dirset');
-        var includes = project.getProperty('ivy.public.sources');
+        var configurations = project.getProperty('ivy.public.configurations');
         dirSet.setDir(new File(targetDir + '/compile'));
-        dirSet.setIncludes(includes);
+        dirSet.setIncludes(configurations);
         var scanner = dirSet.getDirectoryScanner(project);
         var directories = scanner.getIncludedDirectories();
 
@@ -40,13 +40,16 @@
         print(task.getClass());
         for (var x = 0; x < directories.length; x ++) {
           var directory = directories[x];
-          var filelabel = directory == 'main' ? '' : '-' + directory;
+          var filelabel = directory == 'default' ? '' : '-' + directory;
           task.setDynamicAttribute('directory', directory);
           task.setDynamicAttribute('filelabel', filelabel);
           task.perform();
         }
       ]]>
     </script>
+
+    <zip destfile="${targetdir}/publish/${ivy.module}-${ivy.revision}-doc.zip"
+         basedir="${targetdir}/javadoc"/>
   </target>
 
   <!-- Publishing via Ivy -->

@@ -17,7 +17,7 @@
               <fileset includes="**/*.java" defaultexcludes="yes">
                 <xsl:attribute name="dir">
                   <xsl:text>${sourcedir}/</xsl:text>
-                  <xsl:value-of select="."/>
+                  <xsl:value-of select="normalize-space(.)"/>
                 </xsl:attribute>
               </fileset>
             </xsl:for-each>

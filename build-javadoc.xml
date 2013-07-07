@@ -18,19 +18,15 @@
 
     <mkdir dir="${targetdir}/javadoc"/>
 
-    <echoxml file="${targetdir}/javadoc-source.xml">
-      <project/>
-    </echoxml>
-
-    <xslt in="${targetdir}/javadoc-source.xml"
-          out="${targetdir}/javadoc-build.xml"
+    <xslt in="${ant.file}"
+          out="${targetdir}/javadoc.xml"
           style="${builddir}/javadoc.xslt">
       <param name="macro" expression="macro.javadoc"/>
       <param name="target" expression="-javadoc:callmacro"/>
-      <param name="sources" expression="${ivy.public.sources}"/>
+      <param name="sources" expression="${ivy.public.configurations}"/>
     </xslt>
 
-    <ant antfile="${targetdir}/javadoc-build.xml"
+    <ant antfile="${targetdir}/javadoc.xml"
          target="-javadoc:callmacro"/>
 
   </target>
