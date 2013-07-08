@@ -36,5 +36,9 @@
     <ant antfile="${targetdir}/javadoc.xml"
          target="-javadoc:callmacro"/>
 
+    <!-- Create a big ZIP file of all our JavaDOCs (all together) -->
+    <zip destfile="${targetdir}/publish/${ivy.module}-${ivy.revision}-doc.zip"
+         basedir="${targetdir}/javadoc"/>
+
   </target>
 </project>
