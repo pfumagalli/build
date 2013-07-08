@@ -22,11 +22,21 @@
         var sourceDir = project.getProperty('sourcedir');
         var configurations = project.getProperty('ivy.configurations');
         var array = String(configurations).split(',');
+        var packageName = project.getProperty('ivy.organisation')
+                  + '.' + project.getProperty('ivy.module');
+        var packageDir = String(packageName).replace(/\./g, '/');
 
         for (var x = 0; x < array.length; x ++) {
           var configuration = array[x].trim();
           var directory = new File(sourceDir, configuration);
-          if (directory.mkdirs()) print ('Created directory "' + directory + '"');
+          if (directory.mkdirs()) {
+            print ('Created directory "' + directory + '"');
+            if (new File(directory, packageDir).mkdirs()) {
+              print ('Created package "' + packageName + '" in "'
+                     + configuration + '" configuration');
+            }
+          }
+          print(packageName + "->" + packageDir);
         }
       ]]>
     </script>
