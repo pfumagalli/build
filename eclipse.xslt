@@ -12,18 +12,20 @@
   
   <xsl:variable name="eclipseout" select="substring-after($eclipsedir,concat($basedir,'/'))"/>
 
-  <!-- Start creating a normal Eclipse .classpath file -->
+  <!-- Start creating a normal Eclipse .classpath file (order is important) -->
   <xsl:template match="/">
     <classpath>
-      <!-- Output and container -->
-      <classpathentry kind="output" path="{$eclipseout}"/>
-      <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-
       <!-- Parse in the Ivy file and convert configurations in source paths -->
       <xsl:apply-templates select="document($ivyfile)/ivy-module/configurations/conf"/>
 
+      <!-- Container (our JRE libraries) -->
+      <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+
       <!-- Using the artifact report, configure all libraries -->
       <xsl:apply-templates select="/modules/module"/>
+
+      <!-- Output directory -->
+      <classpathentry kind="output" path="{$eclipseout}"/>
     </classpath>
   </xsl:template>
 
