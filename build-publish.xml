@@ -16,7 +16,7 @@
 
   <!-- Use JavaScript to JAR up each directory individually -->
   <target name="package"
-          depends="compile,javadoc"
+          depends="compile"
           unless="task.executed.package"
           description="Prepare JAR archives for each compiled source directory">
     <property name="task.executed.package" value="true"/>
@@ -49,27 +49,35 @@
         }
       ]]>
     </script>
+  </target>
 
-    <!-- Create a big ZIP file of all our JavaDOCs (all together) -->
-    <zip destfile="${targetdir}/publish/${ivy.module}-${ivy.revision}-doc.zip"
-         basedir="${targetdir}/javadoc"/>
+  <!-- Publishing locally to the "lib" dir -->
+  <target name="dist"
+          depends="package"
+          unless="task.executed.dist"
+          description="Copy all libraries and prepare for distribution">
+    <property name="task.executed.dist" value="true"/>
+
+    <!-- Create our lib directory -->
+    <mkdir dir="${basedir}/lib"/>
+
+    <!-- Retrieve and copy all artifacts -->
+    <ivy:retrieve conf="${ivy.public.configurations}" type="bin"/>
+
+    <!-- Slap the generated JARs in there, too -->
+    <copy todir="${basedir}/lib">
+      <fileset dir="${targetdir}/publish" includes="${ivy.module}*-bin.jar"/>
+    </copy>
 
   </target>
 
   <!-- Publishing via Ivy -->
   <target name="publish"
-          depends="package"
+          depends="package,javadoc"
           unless="task.executed.publish"
           description="Publish artifacts in the local Ivy repository">
     <property name="task.executed.publish" value="true"/>
-
-    <ivy:publish resolver="publications"
-                 conf="*(public)"
-                 replacedynamicrev="true"
-                 overwrite="true"
-                 publishivy="true"
-                 update="true"
-                 artifactspattern="${targetdir}/publish/[artifact]-[revision]-[type].[ext]"/>
+    <ivy:publish resolver="publications" conf="*(public)"/>
   </target>
 
 </project>
