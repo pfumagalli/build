@@ -80,7 +80,7 @@
   <!-- Create the Ant build file if it doesn't exist -->
   <target name="-create:ant" unless="antfile.found">
     <echoxml file="${antfile}">
-      <project name="${module}">
+      <project name="${module}" default="dist">
         <property name="builddir" value="${builddir}"/>
         <import file="$${builddir}/build.xml"/>
       </project>
