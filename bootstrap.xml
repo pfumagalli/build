@@ -5,9 +5,11 @@
   <property name="antfile" location="${user.dir}/build.xml"/>
   <property name="ivyfile" location="${user.dir}/ivy.xml"/>
   <property name="prjfile" location="${user.dir}/.project"/>
+  <property name="gitfile" location="${user.dir}/.gitignore"/>
   <available file="${antfile}" property="antfile.found"/>
   <available file="${ivyfile}" property="ivyfile.found"/>
   <available file="${prjfile}" property="prjfile.found"/>
+  <available file="${gitfile}" property="gitfile.found"/>
 
   <!-- Bootstrap the project, tasks below -->
   <target name="bootstrap"
@@ -75,7 +77,7 @@
       | CREATIONS: Files to create if they do not exist                    |
       + ================================================================== + -->
 
-  <target name="-create" depends="-create:ant,-create:ivy,-create:prj"/>
+  <target name="-create" depends="-create:ant,-create:ivy,-create:prj,-create:git"/>
 
   <!-- Create the Ant build file if it doesn't exist -->
   <target name="-create:ant" unless="antfile.found">
@@ -115,6 +117,15 @@
         </natures>
       </projectDescription>
     </echoxml>
+  </target>
+
+  <!-- Create the Git ignore file if it doesn't exist -->
+  <target name="-create:git" unless="gitfile.found">
+    <echo file="${gitfile}" append="false">.classpath&#10;</echo>
+    <echo file="${gitfile}" append="true" >.ivycache/*&#10;</echo>
+    <echo file="${gitfile}" append="true" >.project&#10;</echo>
+    <echo file="${gitfile}" append="true" >lib/*&#10;</echo>
+    <echo file="${gitfile}" append="true" >target/*&#10;</echo>
   </target>
 
 </project>
