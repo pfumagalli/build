@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="bootstrap" default="bootstrap">
+
+  <!-- Create properties for Ivy, Ant and Eclipse files, check if they exist -->
+  <property name="antfile" location="${user.dir}/build.xml"/>
+  <property name="ivyfile" location="${user.dir}/ivy.xml"/>
+  <property name="prjfile" location="${user.dir}/.project"/>
+  <available file="${antfile}" property="antfile.found"/>
+  <available file="${ivyfile}" property="ivyfile.found"/>
+  <available file="${prjfile}" property="prjfile.found"/>
+
+  <!-- Bootstrap the project, tasks below -->
+  <target name="bootstrap"
+          description="Bootstrap a project"
+          depends="-check,-ask,-create">
+    <ant antfile="${antfile}"
+         target="eclipse"
+         dir="${projectdir}"
+         inheritAll="false"/>
+    <echo message="All done!"/>
+  </target>
+
+  <!--+ ================================================================== +
+      | FAILURES: Things to check before continuing                        |
+      + ================================================================== + -->
+  
+  <target name="-check" depends="-check:ant,-check:ivy"/>
+
+  <!-- Gracefully fail if the Ant build file exists -->
+  <target name="-check:ant" if="antfile.found">
+    <fail message="Ant build '${antfile}' already exists"/>
+  </target>
+
+  <!-- Gracefully fail if the Ivy descriptor file exists -->
+  <target name="-check:ivy" if="ivyfile.found">
+    <fail message="Ivy file '${ivyfile}' already exists"/>
+  </target>
+
+
+  <!--+ ================================================================== +
+      | QUESTIONS: Things to know before we continue                       |
+      + ================================================================== + -->
+
+  <target name="-ask" depends="-check">
+
+    <!-- Basic locations -->
+    <property name="projectdir"
+              location="${user.dir}"/>
+    <property name="builddir"
+              basedir="${projectdir}"
+              location="${basedir}"
+              relative="true"/>
+    
+    <!-- Details about what we're doing -->
+    <echo message="Bootstrapping project in '${projectdir}'"/>
+    <echo message="      build directory in '${builddir}'"/>
+    <echo message=""/>
+
+    <!-- Organization name (with default) -->
+    <input message="Enter organisation name"
+           addproperty="organisation"
+           defaultvalue="com.github.pfumagalli"/>
+
+    <!-- Module name (required, no default) -->
+    <input message="Enter project module" addproperty="module"/>
+    <condition property="no.module">
+      <equals arg1="" arg2="${module}"/>
+    </condition>
+    <fail if="no.module" message="No module name specified"/>
+
+
+  </target>
+
+  <!--+ ================================================================== +
+      | CREATIONS: Files to create if they do not exist                    |
+      + ================================================================== + -->
+
+  <target name="-create" depends="-create:ant,-create:ivy,-create:prj"/>
+
+  <!-- Create the Ant build file if it doesn't exist -->
+  <target name="-create:ant" unless="antfile.found">
+    <echoxml file="${antfile}">
+      <project name="${module}">
+        <property name="builddir" value="${builddir}"/>
+        <import file="$${builddir}/build.xml"/>
+      </project>
+    </echoxml>
+  </target>
+
+  <!-- Create the Ivy descriptor file if it doesn't exist -->
+  <target name="-create:ivy" unless="ivyfile.found">
+    <echoxml file="${ivyfile}">
+      <ivy-module version="2.0">
+        <info organisation="${organisation}" module="${module}" revision="0.0.0"/>
+        <configurations>
+          <conf name="default" visibility="public"/>
+        </configurations>
+        <dependencies/>
+      </ivy-module>
+    </echoxml>
+  </target>
+
+  <!-- Create the Eclipse project file if it doesn't exist -->
+  <target name="-create:prj" unless="prjfile.found">
+    <echoxml file="${prjfile}">
+      <projectDescription>
+        <name>${module}</name>
+        <buildSpec>
+          <buildCommand>
+            <name>org.eclipse.jdt.core.javabuilder</name>
+          </buildCommand>
+        </buildSpec>
+        <natures>
+          <nature>org.eclipse.jdt.core.javanature</nature>
+        </natures>
+      </projectDescription>
+    </echoxml>
+  </target>
+
+</project>
+
