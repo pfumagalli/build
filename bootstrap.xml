@@ -52,24 +52,24 @@
               basedir="${projectdir}"
               location="${basedir}"
               relative="true"/>
-    
+
+    <!-- The base name of the project directory becomes our default module -->
+    <basename property="module.default" file="${projectdir}"/>
+
     <!-- Details about what we're doing -->
     <echo message="Bootstrapping project in '${projectdir}'"/>
     <echo message="      build directory in '${builddir}'"/>
     <echo message=""/>
 
-    <!-- Organization name (with default) -->
-    <input message="Enter organisation name"
-           addproperty="organisation"
-           defaultvalue="com.github.pfumagalli"/>
+    <!-- Organization name -->
+    <input message="Enter organisation name, defaults to"
+           defaultvalue="com.github.pfumagalli"
+           addproperty="organisation"/>
 
     <!-- Module name (required, no default) -->
-    <input message="Enter project module" addproperty="module"/>
-    <condition property="no.module">
-      <equals arg1="" arg2="${module}"/>
-    </condition>
-    <fail if="no.module" message="No module name specified"/>
-
+    <input message="Enter project module, defaults to"
+           defaultvalue="${module.default}"
+           addproperty="module"/>
 
   </target>
 
