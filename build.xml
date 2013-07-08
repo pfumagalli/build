@@ -32,6 +32,7 @@
   <import file="build-eclipse.xml"/>
   <import file="build-init.xml"/>
   <import file="build-javadoc.xml"/>
+  <import file="build-package.xml"/>
   <import file="build-publish.xml"/>
   <import file="build-versions.xml"/>
 
