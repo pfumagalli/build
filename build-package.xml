@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <!-- A little macro we can use to jar a target directory up -->
+  <macrodef name="macro.package" >
+    <attribute name="directory"/>
+    <attribute name="filelabel"/>
+    <sequential>
+      <jar destfile="${targetdir}/publish/${ivy.module}@{filelabel}-${ivy.revision}-bin.jar"
+           basedir="${targetdir}/compile/@{directory}"
+           excludes="**/*.java"/>
+      <zip destfile="${targetdir}/publish/${ivy.module}@{filelabel}-${ivy.revision}-src.zip"
+           basedir="${sourcedir}/@{directory}"/>
+    </sequential>
+  </macrodef>
+
+  <!-- Use JavaScript to JAR up each directory individually -->
+  <target name="package"
+          depends="compile"
+          unless="task.executed.package"
+          description="Prepare JAR archives for each compiled source directory">
+    <property name="task.executed.package" value="true"/>
+
+    <!-- Make some room for our publishing directory -->
+    <mkdir dir="${targetdir}/publish"/>
+
+    <!-- Jar binaries and Zip sources using the macro above -->
+    <script language="javascript">
+      <![CDATA[
+        importClass(java.io.File);
+
+        // Create a dirset and get the public conf directories from /target/compile
+        var targetDir = project.getProperty('targetdir');
+        var dirSet = project.createDataType('dirset');
+        var configurations = project.getProperty('ivy.public.configurations');
+        dirSet.setDir(new File(targetDir + '/compile'));
+        dirSet.setIncludes(configurations);
+        var scanner = dirSet.getDirectoryScanner(project);
+        var directories = scanner.getIncludedDirectories();
+
+        // Using our macro, package up each directory individually
+        var task = project.createTask('macro.package');
+        for (var x = 0; x < directories.length; x ++) {
+          var directory = directories[x];
+          var filelabel = directory == 'default' ? '' : '-' + directory;
+          task.setDynamicAttribute('directory', directory);
+          task.setDynamicAttribute('filelabel', filelabel);
+          task.perform();
+        }
+      ]]>
+    </script>
+  </target>
+
+  <!-- Publishing locally to the "lib" dir -->
+  <target name="dist"
+          depends="package"
+          unless="task.executed.dist"
+          description="Copy all libraries and prepare for distribution">
+    <property name="task.executed.dist" value="true"/>
+
+    <!-- Create our lib directory -->
+    <mkdir dir="${basedir}/lib"/>
+
+    <!-- Retrieve and copy all artifacts -->
+    <ivy:retrieve conf="${ivy.public.configurations}" type="bin"/>
+
+    <!-- Slap the generated JARs in there, too -->
+    <copy todir="${basedir}/lib">
+      <fileset dir="${targetdir}/publish" includes="${ivy.module}*-bin.jar"/>
+    </copy>
+
+  </target>
+
+  <!-- Publishing via Ivy -->
+  <target name="publish"
+          depends="package,javadoc"
+          unless="task.executed.publish"
+          description="Publish artifacts in the local Ivy repository">
+    <property name="task.executed.publish" value="true"/>
+    <ivy:publish resolver="publications" conf="*(public)"/>
+  </target>
+
+</project>
