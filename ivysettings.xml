@@ -2,11 +2,15 @@
 
 <ivysettings>
 
-  <property name="ivy.retrieve.pattern" value="lib/[artifact]-[type]-[revision].[ext]"/>
+  <!-- Where to put library files once we retrieve them -->
+  <property name="ivy.retrieve.pattern"
+            value="${basedir}/lib/[artifact]-[revision]-[type].[ext]"/>
+  <!-- Where the build system places JARs upon building -->
+  <property name="ivy.publish.src.artifacts.pattern" value="${targetdir}/publish/[artifact]-[revision]-[type].[ext]"/>
 
   <settings defaultResolver="libraries" />
 
-  <caches defaultCacheDir="${ivy.cache}" />
+  <caches defaultCacheDir="${basedir}/.ivycache" />
 
   <resolvers>
 
