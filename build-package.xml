@@ -50,34 +50,4 @@
       ]]>
     </script>
   </target>
-
-  <!-- Publishing locally to the "lib" dir -->
-  <target name="dist"
-          depends="package"
-          unless="task.executed.dist"
-          description="Copy all libraries and prepare for distribution">
-    <property name="task.executed.dist" value="true"/>
-
-    <!-- Create our lib directory -->
-    <mkdir dir="${basedir}/lib"/>
-
-    <!-- Retrieve and copy all artifacts -->
-    <ivy:retrieve conf="${ivy.public.configurations}" type="bin"/>
-
-    <!-- Slap the generated JARs in there, too -->
-    <copy todir="${basedir}/lib">
-      <fileset dir="${targetdir}/publish" includes="${ivy.module}*-bin.jar"/>
-    </copy>
-
-  </target>
-
-  <!-- Publishing via Ivy -->
-  <target name="publish"
-          depends="package,javadoc"
-          unless="task.executed.publish"
-          description="Publish artifacts in the local Ivy repository">
-    <property name="task.executed.publish" value="true"/>
-    <ivy:publish resolver="publications" conf="*(public)"/>
-  </target>
-
 </project>
