@@ -22,7 +22,7 @@
       <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 
       <!-- Using the artifact report, configure all libraries -->
-      <xsl:apply-templates select="/modules/module[artifact[@type='bin']/cache-location]"/>
+      <xsl:apply-templates select="/modules/module"/>
 
       <!-- Output directory -->
       <classpathentry kind="output" path="{$eclipseout}"/>
@@ -35,8 +35,13 @@
                     output="{$eclipseout}"/>
   </xsl:template>
 
-  <!-- Modules in the artifact report become libraries in Eclipse -->
+  <!-- Modules without "bin" type -->
   <xsl:template match="module">
+    <xsl:comment> Skipping module <xsl:value-of select="concat(@organisation,'.',@name,'-',@rev)"/> </xsl:comment>
+  </xsl:template>
+  
+  <!-- Modules in the artifact report become libraries in Eclipse -->
+  <xsl:template match="module[artifact[@type='bin']/cache-location]">
     <classpathentry kind="lib">
 
       <!-- If we have a "bin" artifact, it's the path of our library -->

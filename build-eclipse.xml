@@ -36,7 +36,6 @@
                      + configuration + '" configuration');
             }
           }
-          print(packageName + "->" + packageDir);
         }
       ]]>
     </script>

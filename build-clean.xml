@@ -11,6 +11,7 @@
 
   <!-- Cleanup all our build files -->
   <target name="distclean"
+          depends="clean"
           unless="task.executed.distclean"
           description="Clean up the build targets and distribution libraries">
     <property name="task.executed.distclean" value="true"/>
