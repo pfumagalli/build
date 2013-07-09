@@ -15,13 +15,13 @@
 
   <resolvers>
 
-    <filesystem name="libraries">
-      <ivy      pattern="${ivy.libraries}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
+    <filesystem name="libraries" checkmodified="true">
+      <ivy      pattern="${ivy.libraries}/[organisation]/[module]/[revision]/ivy.xml" />
       <artifact pattern="${ivy.libraries}/[organisation]/[module]/[revision]/[artifact]-[revision]-[type].[ext]" />
     </filesystem>
 
     <filesystem name="publications" checksums="">
-      <ivy      pattern="${ivy.publications}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
+      <ivy      pattern="${ivy.publications}/[organisation]/[module]/[revision]/ivy.xml" />
       <artifact pattern="${ivy.publications}/[organisation]/[module]/[revision]/[artifact]-[revision]-[type].[ext]" />
     </filesystem>
 
