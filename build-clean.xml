@@ -9,4 +9,12 @@
     <delete dir="${targetdir}"/>
   </target>
 
+  <!-- Cleanup all our build files -->
+  <target name="distclean"
+          unless="task.executed.distclean"
+          description="Clean up the build targets and distribution libraries">
+    <property name="task.executed.distclean" value="true"/>
+    <delete dir="${basedir}/lib"/>
+  </target>
+
 </project>
