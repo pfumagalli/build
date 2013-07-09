@@ -17,6 +17,7 @@
     <!-- Slap the generated JARs in there, too -->
     <copy todir="${basedir}/lib">
       <fileset dir="${targetdir}/publish" includes="${ivy.module}*-bin.jar"/>
+      <mapper type="glob" from="*" to="${ivy.organisation}.*"/>
     </copy>
 
   </target>
