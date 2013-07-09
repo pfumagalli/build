@@ -22,7 +22,7 @@
       <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 
       <!-- Using the artifact report, configure all libraries -->
-      <xsl:apply-templates select="/modules/module"/>
+      <xsl:apply-templates select="/modules/module[artifact[@type='bin']/cache-location]"/>
 
       <!-- Output directory -->
       <classpathentry kind="output" path="{$eclipseout}"/>
