@@ -11,12 +11,13 @@
   <xsl:param name="eclipsedir"/>
   
   <xsl:variable name="eclipseout" select="substring-after($eclipsedir,concat($basedir,'/'))"/>
+  <xsl:variable name="ivy" select="document($ivyfile)"/>
 
   <!-- Start creating a normal Eclipse .classpath file (order is important) -->
   <xsl:template match="/">
     <classpath>
       <!-- Parse in the Ivy file and convert configurations in source paths -->
-      <xsl:apply-templates select="document($ivyfile)/ivy-module/configurations/conf"/>
+      <xsl:apply-templates select="$ivy/ivy-module/configurations/conf"/>
 
       <!-- Container (our JRE libraries) -->
       <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -63,6 +64,17 @@
         <attributes>
           <attribute name="javadoc_location" value="jar:file:{artifact[@type='doc']/cache-location}!/"/>
         </attributes>
+      </xsl:if>
+
+      <!-- Make sure we generate warning for transitive dependencies -->
+      <!-- module organisation="org.testng" name="testng" rev="6.8.5" status="release" -->
+      <xsl:variable name="organisation" select="@organisation"/>
+      <xsl:variable name="name" select="@name"/>
+      <xsl:variable name="rev" select="@rev"/>
+      <xsl:if test="not($ivy/ivy-module/dependencies/dependency[@org=$organisation][@name=$name][@rev=$rev])">
+        <accessrules>
+          <accessrule kind="discouraged" pattern="**"/>
+        </accessrules>
       </xsl:if>
 
     </classpathentry>

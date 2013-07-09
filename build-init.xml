@@ -11,7 +11,7 @@
 
     <!-- Load up our Ivy file and resolve dependencies -->
     <ivy:settings file="${builddir}/ivysettings.xml"/>
-    <ivy:resolve file="${targetdir}/ivy.xml" transitive="false"/>
+    <ivy:resolve file="${targetdir}/ivy.xml"/>
     <ivy:info file="${targetdir}/ivy.xml"/>
 
     <ivy:cachepath pathid="ivy.classpath" type="bin" conf="*"/>
@@ -47,19 +47,6 @@
     <echo message="Organisation:   ${ivy.organisation}"/>
     <echo message="Module:         ${ivy.module}"/>
     <echo message="Revision:       ${ivy.revision}"/>
-  </target>
-
-  <!-- Resolve (transitively) all dependencies -->
-  <target name="resolve"
-          depends="init"
-          unless="task.executed.resolve"
-          description="Resolve transitively all Ivy dependencies">
-    <property name="task.executed.resolve" value="true"/>
-
-    <ivy:resolve file="${targetdir}/ivy.xml"
-                 conf="*"
-                 resolveId="full"
-                 transitive="true"/>
   </target>
 
 </project>

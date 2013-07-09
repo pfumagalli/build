@@ -3,7 +3,7 @@
 
   <!-- Publishing locally to the "lib" dir -->
   <target name="dist"
-          depends="package,resolve"
+          depends="package"
           unless="task.executed.dist"
           description="Copy all libraries and prepare for distribution">
     <property name="task.executed.dist" value="true"/>
@@ -12,7 +12,7 @@
     <mkdir dir="${basedir}/lib"/>
 
     <!-- Retrieve and copy all artifacts -->
-    <ivy:retrieve resolveId="full" conf="${ivy.public.configurations}" type="bin"/>
+    <ivy:retrieve conf="${ivy.public.configurations}" type="bin"/>
 
     <!-- Slap the generated JARs in there, too -->
     <copy todir="${basedir}/lib">
