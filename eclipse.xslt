@@ -36,48 +36,51 @@
                     output="{$eclipseout}"/>
   </xsl:template>
 
-  <!-- Modules without "bin" type -->
+  <!-- Modules -->
   <xsl:template match="module">
-    <xsl:comment> Skipping module <xsl:value-of select="concat(@organisation,'.',@name,'-',@rev)"/> </xsl:comment>
+    <xsl:apply-templates select="artifact[@type='bin']"/>
   </xsl:template>
   
-  <!-- Modules in the artifact report become libraries in Eclipse -->
-  <xsl:template match="module[artifact[@type='bin']/cache-location]">
-    <classpathentry kind="lib">
+  <!-- Artifacts -->
+  <xsl:template match="artifact">
+    <xsl:if test="@type='bin'">
+      <xsl:if test="cache-location">
+        <classpathentry kind="lib">
 
-      <!-- If we have a "bin" artifact, it's the path of our library -->
-      <xsl:if test="artifact[@type='bin']">
-        <xsl:attribute name="path">
-          <xsl:value-of select="artifact[@type='bin']/cache-location"/>
-        </xsl:attribute>
+          <!-- If we have a "bin" artifact, it's the path of our library -->
+          <xsl:attribute name="path">
+            <xsl:value-of select="cache-location"/>
+          </xsl:attribute>
+          
+          <xsl:variable name="name" select="@name"/>
+
+          <!-- If we have a "src" artifact, link in the sources -->
+          <xsl:if test="../artifact[@name=$name][@type='src']">
+            <xsl:attribute name="sourcepath">
+              <xsl:value-of select="../artifact[@name=$name][@type='src']/cache-location"/>
+            </xsl:attribute>
+          </xsl:if>
+
+          <!-- If we have a "doc" artifact, add the JavaDOC attribute -->
+          <xsl:if test="../artifact[@name=$name][@type='doc']">
+            <attributes>
+              <attribute name="javadoc_location" value="jar:file:{../artifact[@name=$name][@type='doc']/cache-location}!/"/>
+            </attributes>
+          </xsl:if>
+
+          <!-- Make sure we generate warning for transitive dependencies -->
+          <xsl:variable name="organisation" select="../@organisation"/>
+          <xsl:variable name="module-name" select="../@name"/>
+          <xsl:variable name="module-rev" select="../@rev"/>
+          <xsl:if test="not($ivy/ivy-module/dependencies/dependency[@org=$organisation][@name=$module-name][@rev=$module-rev])">
+            <accessrules>
+              <accessrule kind="discouraged" pattern="**"/>
+            </accessrules>
+          </xsl:if>
+
+        </classpathentry>
       </xsl:if>
-
-      <!-- If we have a "src" artifact, link in the sources -->
-      <xsl:if test="artifact[@type='src']">
-        <xsl:attribute name="sourcepath">
-          <xsl:value-of select="artifact[@type='src']/cache-location"/>
-        </xsl:attribute>
-      </xsl:if>
-
-      <!-- If we have a "doc" artifact, add the JavaDOC attribute -->
-      <xsl:if test="artifact[@type='doc']">
-        <attributes>
-          <attribute name="javadoc_location" value="jar:file:{artifact[@type='doc']/cache-location}!/"/>
-        </attributes>
-      </xsl:if>
-
-      <!-- Make sure we generate warning for transitive dependencies -->
-      <!-- module organisation="org.testng" name="testng" rev="6.8.5" status="release" -->
-      <xsl:variable name="organisation" select="@organisation"/>
-      <xsl:variable name="name" select="@name"/>
-      <xsl:variable name="rev" select="@rev"/>
-      <xsl:if test="not($ivy/ivy-module/dependencies/dependency[@org=$organisation][@name=$name][@rev=$rev])">
-        <accessrules>
-          <accessrule kind="discouraged" pattern="**"/>
-        </accessrules>
-      </xsl:if>
-
-    </classpathentry>
+    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>
