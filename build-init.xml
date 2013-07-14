@@ -48,5 +48,12 @@
     <echo message="Module:         ${ivy.module}"/>
     <echo message="Revision:       ${ivy.revision}"/>
   </target>
-
+  
+  <!-- Simple task to convert a .pom into a .ivy -->
+  <target name="pom2ivy" if="pom">
+    <get src="${pom}" dest="${targetdir}/pom.xml"/>
+    <ivy:convertpom pomFile="${targetdir}/pom.xml" ivyFile="${targetdir}/pom2ivy.xml" />
+  </target>
+  
+  
 </project>
