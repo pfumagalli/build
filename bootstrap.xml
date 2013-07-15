@@ -121,7 +121,8 @@
 
   <!-- Create the Git ignore file if it doesn't exist -->
   <target name="-create:git" unless="gitfile.found">
-    <echo file="${gitfile}" append="false">.classpath&#10;</echo>
+    <echo file="${gitfile}" append="false">.DS_Store&#10;</echo>
+    <echo file="${gitfile}" append="true" >.classpath&#10;</echo>
     <echo file="${gitfile}" append="true" >.ivycache/*&#10;</echo>
     <echo file="${gitfile}" append="true" >.project&#10;</echo>
     <echo file="${gitfile}" append="true" >lib/*&#10;</echo>
