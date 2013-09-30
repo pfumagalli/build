@@ -27,6 +27,7 @@
         | can be processed all in one go without the need to set classpaths.
         +-->
     <javac includeantruntime="false"
+           classpathref="ivy.classpath"
            srcdir="${compile.directories}"/>
 
   </target>
